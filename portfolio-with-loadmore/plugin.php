@@ -22,28 +22,69 @@ define('PORTFOLIO_HELPER_DIR', trailingslashit(plugin_dir_path(__FILE__)));
 /** Portfolio includes directory path  */
 define('PORTFOLIO_HELPER_INCLUDES_DIR', trailingslashit(PORTFOLIO_HELPER_DIR . 'includes'));
 
-class OurPortfolioPlugin
-{
+class OurPortfolioPlugin {
 
-    public function __construct()
-    {
+    public function __construct() {
         add_action('plugins_loded', array($this, 'portfolio_textdomain'));
         add_action('wp_enqueue_scripts', array($this, 'portfolio_fontend_assets'));
 
         add_shortcode('portfolio', array($this, 'portfolio_shortcode'));
 
+        add_action('wp_ajax_loadmore', array($this, 'load_ajax_data'));
+        add_action('wp_ajax_nopriv_loadmore', array($this, 'load_ajax_data'));
+
         $this->load_include();
     }
 
-    private function load_include()
-    {
+    private function load_include() {
         include PORTFOLIO_HELPER_INCLUDES_DIR . 'custom-post.php';
     }
 
-    public function portfolio_shortcode()
-    {
-        ob_start();
+    public function load_ajax_data() {
+
+
+        $args = array(
+            'post_type' => 'portfolio',
+            'posts_per_page' => $_POST['postNumber'],
+            'paged' => $_POST['page'] + 1
+        );
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) :
+            while ($query->have_posts()) : $query->the_post();
+                $terms = get_the_terms(get_the_ID(), 'category');
+                $cat = array();
+                $id = '';
+                if ($terms) {
+                    foreach ($terms as $term) {
+                        $cat[] = $term->name . ' ';
+                        $slug = $term->slug;
+                        $id  .= ' ' . $term->slug . '-' . $term->term_id;
+                    }
+                }
 ?>
+                <div class="portfolio-item <?php echo esc_attr($id); ?>">
+                    <a href="<?php the_permalink(); ?>" class="portfolio-image popup-gallery" title="Bread">
+                        <img src="<?php the_post_thumbnail_url() ?>" alt="">
+                        <div class="portfolio-hover-title">
+                            <div class="portfolio-content">
+                                <h4><?php the_title(); ?></h4>
+                                <div class="portfolio-category">
+                                    <span><?php echo $slug; ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+        <?php
+            endwhile;
+            wp_reset_postdata();
+        endif;
+    }
+
+    public function portfolio_shortcode() {
+        ob_start();
+        ?>
 
         <div class="section bg-white pt-2 pb-2 text-center" data-aos="fade">
             <div class="container">
@@ -69,7 +110,7 @@ class OurPortfolioPlugin
 
                             $args = array(
                                 'post_type' => 'portfolio',
-                                'posts_per_page' => 3,
+                                'posts_per_page' => 2,
                             );
                             $query = new WP_Query($args);
 
@@ -128,28 +169,25 @@ class OurPortfolioPlugin
         </div>
 
         <div class="portfolio--footer">
-                <div class="load-more-btn">
-                     <a class="btn loadAjax btn-default"><?php esc_html_e( 'Load More', 'porfolio' ); ?></a>
-                </div>
+            <div class="load-more-btn">
+                <a class="btn loadAjax btn-default"><?php esc_html_e('Load More', 'porfolio'); ?></a>
+            </div>
         </div>
 
 <?php
         return ob_get_clean();
     }
 
-    public function portfolio_fontend_assets()
-    {
+    public function portfolio_fontend_assets() {
         wp_enqueue_style('portfolio-bootstrap', plugin_dir_url(__FILE__) . "assets/css/bootstrap.css", null, PORTFOLIO_VERSION);
         wp_enqueue_style('portfolio-css', plugin_dir_url(__FILE__) . "assets/css/portfolio.css", null, PORTFOLIO_VERSION);
-
 
         wp_enqueue_script('portfolio-bootstrap-js', plugin_dir_url(__FILE__) . "assets/js/bootstrap.min.js", array('jquery'), PORTFOLIO_VERSION, true);
         wp_enqueue_script('isotope-js', plugin_dir_url(__FILE__) . "assets/js/isotope.pkgd.min.js", array('jquery'), PORTFOLIO_VERSION, true);
         wp_enqueue_script('portfolio-js', plugin_dir_url(__FILE__) . "assets/js/portfolio.js", array('jquery', 'isotope-js'), PORTFOLIO_VERSION, true);
     }
 
-    public function portfolio_textdomain()
-    {
+    public function portfolio_textdomain() {
         load_plugin_textdomain('portfolio', false, dirname(__FILE__) . "/languages");
     }
 }
