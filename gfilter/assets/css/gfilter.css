@@ -1,0 +1,36 @@
+.gfilter-nav ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.gfilter-nav ul li {
+    list-style: none;
+}
+.gfilter-nav ul li a {
+    background-color: red;
+    padding: 3px 10px;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+.gfilter-nav ul li a:hover {
+    background-color: blue;
+}
+
+.gfilter-item {
+    color: #fff;
+    margin-bottom: 20px;
+}
+.gfilter-item .gfilter-item-content {
+    background-color: red;
+}
+
+.gfilter-item a {
+    color: #fff;
+}
+
+.gfilter-item img {
+    width: 100%;
+}
