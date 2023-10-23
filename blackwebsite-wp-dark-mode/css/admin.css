@@ -1,0 +1,17 @@
+.blackwebsite-wrap .blackwebsite-form {
+    background-color: #fff !important;
+    padding: 25px;
+    width: 641px;
+}
+.blackwebsite-admin-setting .nav-tab-active {
+    background-color: #fff !important;
+}
+.blackwebsite-wrap .nav-tab {
+    padding: 10px 20px;
+    background: #2271b1;
+    color: #fff;
+    font-size: 16px;
+}
+.blackwebsite-wrap .nav-tab-active {
+    color:#000;
+}
