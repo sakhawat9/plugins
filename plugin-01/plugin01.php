@@ -3,7 +3,7 @@
 Plugin Name: 	Plugin 01
 Plugin URI: 	https://sakhawat.vercel.app
 Description: 	Plugin 01.
-Author: 		SH Shakib
+Author: 		Sakhawat
 Version: 		1.0.0
 Author URI: 	https://sakhawat.vercel.app
 Requirements:   PHP 5.4 or above, WordPress 5.0 or above.
